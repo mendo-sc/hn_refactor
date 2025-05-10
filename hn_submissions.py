@@ -2,32 +2,39 @@ from operator import itemgetter
 
 import requests
 
-def check_status(url):
-    """Make an API call and check the response.
+def main_api_call(url) -> requests.Response:
+    """Makes an API call to top stories server. Returns response and prints status code.
+
+    Args:
+        url (str): URL of JSON data with Hacker News top stories IDs
 
     Returns:
-        Response: Server data from url
+        requests.Response: Response object of main data
     """
     r = requests.get(url)
     print(f"Status code: {r.status_code}")
     return r
 
-def make_api_call(url, submission_id):
-    """Make a new API call for each submission
+def submission_api_call(url, submission_id) -> requests.Response:
+    """Makes a API call to a submission server. Returns response and prints id and status code.
 
     Args:
-        submission_id (_type_): _description_
+        url (str): URL of JSON data with info of each article
+        submission_id (int): ID of each article
+
+    Returns:
+        requests.Response: Response object of submission data
     """
     r = requests.get(url)
     print(f"id: {submission_id}\tstatus: {r.status_code}")
-    response_dict = r.json()
-    return response_dict
+    return r
+
     
 def build_article_dict(response_dict, url) -> dict:
-    """Builds a dictionary for each article.
+    """Builds a custom dictionary for each article including title, link, and comments.
 
     Args:
-        response_dict (_type_): _description_
+        response_dict (dict): Dictionary of all information of each article
         url (str): URL of Hacker News article
     """
     submission_dict = {
@@ -45,13 +52,14 @@ def print_article_info(submission_dicts):
 
 def main():
     main_url = "https://hacker-news.firebaseio.com/v0/topstories.json"
-    r = check_status(main_url)
-    submission_ids = r.json()
+    main_r = main_api_call(main_url)
+    submission_ids = main_r.json()
 
     submission_dicts = []
     for submission_id in submission_ids[0:30]:
         sub_url = f"https://hacker-news.firebaseio.com/v0/item/{submission_id}.json"
-        response_dict = make_api_call(sub_url, submission_id)
+        submission_r = submission_api_call(sub_url, submission_id)
+        response_dict = submission_r.json()
 
         hn_link = f"https://news.ycombinator.com/item?id={submission_id}"
         submission_dict = build_article_dict(response_dict, hn_link)
@@ -60,7 +68,7 @@ def main():
     submission_dicts = sorted(submission_dicts, key=itemgetter('comments'),
                             reverse=True)
 
-    print_article_info(submission_dicts)
+    # print_article_info(submission_dicts)
 
 if __name__ == '__main__':
     main()
