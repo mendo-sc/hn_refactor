@@ -19,9 +19,9 @@ for submission_id in submission_ids[0:30]:
 
     # Build a dictionary for each article
     submission_dict = {
-        'title': response_dict['title'],
+        'title': response_dict.get('title', 'None'),
         'hn_link': f"https://news.ycombinator.com/item?id={submission_id}",
-        'comments': response_dict['descendants'],
+        'comments': response_dict.get('descendants', -1),
     }
     submission_dicts.append(submission_dict)
 
