@@ -1,3 +1,10 @@
+""" 
+hn_submissions
+Lab17_mendo-1
+May Endo 5/10/25
+The program looks at top stories on Hacker News and lists information about the first 30 and 
+sorts them by descending comment number. Articles with no comment info are shown at the bottom.
+"""
 from operator import itemgetter
 
 import requests
