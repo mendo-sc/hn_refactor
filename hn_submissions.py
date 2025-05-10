@@ -45,7 +45,7 @@ def build_article_dict(response_dict:dict, url:str) -> dict[str,str,int]:
     return submission_dict
 
 def print_article_info(submission_dicts:list) -> None:
-    """Prints title, discussion link, and comments of each submission dictionary.
+    """Prints title, discussion link, and user-friendly comments of each submission dictionary.
 
     Args:
         submission_dicts (list): A list of all submission dictionaries
@@ -53,7 +53,14 @@ def print_article_info(submission_dicts:list) -> None:
     for submission_dict in submission_dicts:
         print(f"\nTitle: {submission_dict['title']}")
         print(f"Discussion link: {submission_dict['hn_link']}")
-        print(f"Comments: {submission_dict['comments']}")
+        
+        # Replace -1 to readable text when printing
+        comment = submission_dict['comments']
+        if comment == -1:
+            comment = 'Information not available'
+        print(f"Comments: {comment}")
+
+    print()
 
 def main():
     main_url = "https://hacker-news.firebaseio.com/v0/topstories.json"
